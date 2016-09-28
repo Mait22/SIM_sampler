@@ -1,4 +1,4 @@
-
+#Helpers
 empty_df <- function(rows,cols,row.names = NULL,col.names = NULL){
   
   df <- as.data.frame(matrix(data = rep(NA, times = rows*cols),nrow = rows,ncol = cols))
@@ -24,7 +24,7 @@ append_vec <- function(original, add){
 }
 
 
-
+#Classes
 setClass("sample.object", 
          representation(group.1 = "character",
                         group.2 = "character",
@@ -42,7 +42,7 @@ setClass("sample.object",
 
 
 
-
+#Worker func
 sampler <- function(df,
                     group.1,
                     group.2,
@@ -143,23 +143,12 @@ sampler <- function(df,
     }
   }
   
-  
-  
-  
   return_results@df.sample.description <- sample_description
-  
-
-  
-  
-  
   
   
   return(return_results)
 }
 
-
-
-a <- sampler(df = structure,group.1 = "VANGLA", group.2 = "LISA", ID.col = "TOKEN",sample.prop = 0.10)
           
 
 
