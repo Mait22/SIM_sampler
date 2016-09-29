@@ -51,23 +51,23 @@ sampler <- function(df,
                     sampled.lab = c("Valimis","Jah","Ei"),
                     sample.round = 0.05,
                     df.sample.description.labs = 
-                    c("Grupp I", "Grupp II", "Kiht","n valimis","N populatsioonis","Valimi osakaal populatsioonist"),
+                      c("Grupp I", "Grupp II", "Kiht","n valimis","N populatsioonis","Valimi osakaal populatsioonist"),
                     sample.prop
-                    ){
+){
   
   return_results <- new("sample.object")
   
   return_results@group.1 <- if(class(group.1) == "numeric"){names(df)[group.1]} 
-                            else if (class(group.1) == "character"){group.1} 
+  else if (class(group.1) == "character"){group.1} 
   return_results@group.2 <- if(class(group.2) == "numeric"){names(df)[group.2]} 
-                            else if (class(group.2) == "character"){group.2}
+  else if (class(group.2) == "character"){group.2}
   
   w_data <- df[,c(ID.col,group.1,group.2)]
   w_data[,c(strata.lab)] <- paste(w_data[,group.1], w_data[,group.2], sep =  " ### ")
   w_data[,sampled.lab[1]] <- rep(NA, times = dim(w_data)[1])
   
   stratas <- unique(w_data[,c(strata.lab)])
-
+  
   
   return_results@stratas <- stratas
   return_results@group.1.levels <- unique(df[,group.1])
@@ -88,13 +88,13 @@ sampler <- function(df,
     
     #Correcting for rounding error in small samples
     if(round(N_subset*sample.prop,0) < (N_subset*sample.prop) & 
-       abs( (round(N_subset*sample.prop,0)-(N_subset*sample.prop)) /(N_subset*sample.prop) ) >= sample.round){
-       sample_size <- (N_subset*sample.prop)%/%1 + 1
+       abs( ((round(N_subset*sample.prop,0))-(N_subset*sample.prop)) /(N_subset*sample.prop) ) >= sample.round){
+      sample_size <- (N_subset*sample.prop)%/%1 + 1
     }
     
     if(round(N_subset*sample.prop,0) < (N_subset*sample.prop) & 
-       abs( (round(N_subset*sample.prop,0)-(N_subset*sample.prop)) /(N_subset*sample.prop) ) < sample.round){
-       sample_size <- (N_subset*sample.prop)%/%1
+       abs( ((round(N_subset*sample.prop,0))-(N_subset*sample.prop)) /(N_subset*sample.prop) ) < sample.round){
+      sample_size <- (N_subset*sample.prop)%/%1
     }
     
     
@@ -113,7 +113,7 @@ sampler <- function(df,
   }
   
   
-
+  
   
   for(i in c(1:dim(w_data)[1])){
     if(w_data[i,ID.col] %in% sampled_IDs == TRUE){
@@ -138,14 +138,14 @@ sampler <- function(df,
   
   for(i in c(1:dim(sample_description)[1])){
     sample_description[i,4] <- sum(sample_description[i,3] == w_data[,c(strata.lab)] & 
-                                   w_data[,sampled.lab[1]] == sampled.lab[2])
+                                     w_data[,sampled.lab[1]] == sampled.lab[2])
     sample_description[i,5] <- sum(sample_description[i,3] == w_data[,c(strata.lab)])
     sample_description[i,6] <- sum(sample_description[i,3] == w_data[,c(strata.lab)] & 
-                                   w_data[,sampled.lab[1]] == sampled.lab[2]) /
-                                   sum(sample_description[i,3] == w_data[,c(strata.lab)])
+                                     w_data[,sampled.lab[1]] == sampled.lab[2]) /
+      sum(sample_description[i,3] == w_data[,c(strata.lab)])
     
     if(sum(sample_description[i,3] == w_data[,c(strata.lab)] & w_data[,sampled.lab[1]] == sampled.lab[2]) != 
-                                sum(sample_description[i,3] == return_results@df.sample[,c(strata.lab)])){
+       sum(sample_description[i,3] == return_results@df.sample[,c(strata.lab)])){
       
       warning("Inconsistent number of obs. between DF-s")
       
