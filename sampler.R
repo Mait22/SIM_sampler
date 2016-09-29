@@ -50,14 +50,17 @@ sampler <- function(df,
                     strata.lab = "Strata",
                     sampled.lab = c("Valimis","Jah","Ei"),
                     sample.round = 0.05,
-                    df.sample.description.labs = c("Grupp I", "Grupp II", "Kiht","n valimis","N populatsioonis","Valimi osakaal populatsioonist"),
+                    df.sample.description.labs = 
+                    c("Grupp I", "Grupp II", "Kiht","n valimis","N populatsioonis","Valimi osakaal populatsioonist"),
                     sample.prop
                     ){
   
   return_results <- new("sample.object")
   
-  return_results@group.1 <- if(class(group.1) == "numeric"){names(df)[group.1]} else if (class(group.1) == "character"){group.1} 
-  return_results@group.2 <- if(class(group.2) == "numeric"){names(df)[group.2]} else if (class(group.2) == "character"){group.2}
+  return_results@group.1 <- if(class(group.1) == "numeric"){names(df)[group.1]} 
+                            else if (class(group.1) == "character"){group.1} 
+  return_results@group.2 <- if(class(group.2) == "numeric"){names(df)[group.2]} 
+                            else if (class(group.2) == "character"){group.2}
   
   w_data <- df[,c(ID.col,group.1,group.2)]
   w_data[,c(strata.lab)] <- paste(w_data[,group.1], w_data[,group.2], sep =  " ### ")
@@ -84,12 +87,14 @@ sampler <- function(df,
     subset_dim <- append_vec(subset_dim,N_subset)
     
     #Correcting for rounding error in small samples
-    if(round(N_subset*sample.prop,0) < (N_subset*sample.prop) & abs( (round(N_subset*sample.prop,0)-(N_subset*sample.prop)) /(N_subset*sample.prop) ) >= sample.round){
-      sample_size <- (N_subset*sample.prop)%/%1 + 1
+    if(round(N_subset*sample.prop,0) < (N_subset*sample.prop) & 
+       abs( (round(N_subset*sample.prop,0)-(N_subset*sample.prop)) /(N_subset*sample.prop) ) >= sample.round){
+       sample_size <- (N_subset*sample.prop)%/%1 + 1
     }
     
-    if(round(N_subset*sample.prop,0) < (N_subset*sample.prop) & abs( (round(N_subset*sample.prop,0)-(N_subset*sample.prop)) /(N_subset*sample.prop) ) < sample.round){
-      sample_size <- (N_subset*sample.prop)%/%1
+    if(round(N_subset*sample.prop,0) < (N_subset*sample.prop) & 
+       abs( (round(N_subset*sample.prop,0)-(N_subset*sample.prop)) /(N_subset*sample.prop) ) < sample.round){
+       sample_size <- (N_subset*sample.prop)%/%1
     }
     
     
@@ -100,7 +105,8 @@ sampler <- function(df,
     
     sample <- sample(subset[,ID.col],size = sample_size,replace = FALSE)
     if(sum(sample %in% sampled_IDs) > 0){
-      warning(paste("Units with ID-s", as.character(sample[sample %in% sampled_IDs]), "already included in other stratas",sep = " "))
+      warning(paste("Units with ID-s", as.character(sample[sample %in% sampled_IDs]), 
+                    "already included in other stratas",sep = " "))
     }
     sampled_IDs <- append_vec(sampled_IDs,sample)
     
@@ -123,17 +129,20 @@ sampler <- function(df,
   
   
   #Sample description df
-  sample_description <- empty_df(rows = length(stratas),cols = length(df.sample.description.labs),col.names =  df.sample.description.labs)
+  sample_description <- empty_df(rows = length(stratas),
+                                 cols = length(df.sample.description.labs),col.names =  df.sample.description.labs)
   sample_description[,3] <- stratas
   sample_description[,1] <- unlist(lapply(strsplit(sample_description[,3],split = " ### "),"[",1)) 
   sample_description[,2] <- unlist(lapply(strsplit(sample_description[,3],split = " ### "),"[",2)) 
   
   
   for(i in c(1:dim(sample_description)[1])){
-    sample_description[i,4] <- sum(sample_description[i,3] == w_data[,c(strata.lab)] & w_data[,sampled.lab[1]] == sampled.lab[2])
+    sample_description[i,4] <- sum(sample_description[i,3] == w_data[,c(strata.lab)] & 
+                                   w_data[,sampled.lab[1]] == sampled.lab[2])
     sample_description[i,5] <- sum(sample_description[i,3] == w_data[,c(strata.lab)])
-    sample_description[i,6] <- sum(sample_description[i,3] == w_data[,c(strata.lab)] & w_data[,sampled.lab[1]] == sampled.lab[2]) /
-                                                                                sum(sample_description[i,3] == w_data[,c(strata.lab)])
+    sample_description[i,6] <- sum(sample_description[i,3] == w_data[,c(strata.lab)] & 
+                                   w_data[,sampled.lab[1]] == sampled.lab[2]) /
+                                   sum(sample_description[i,3] == w_data[,c(strata.lab)])
     
     if(sum(sample_description[i,3] == w_data[,c(strata.lab)] & w_data[,sampled.lab[1]] == sampled.lab[2]) != 
                                 sum(sample_description[i,3] == return_results@df.sample[,c(strata.lab)])){
