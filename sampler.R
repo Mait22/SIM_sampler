@@ -157,18 +157,3 @@ sampler <- function(df,
   
   return(return_results)
 }
-
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
