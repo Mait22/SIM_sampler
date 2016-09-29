@@ -157,3 +157,10 @@ sampler <- function(df,
   
   return(return_results)
 }
+
+#Call demo
+#a <- sampler(df = structure,
+              group.1 = "ASUTUSE.VEERG", 
+              group.2 = "JUHTIMISTASANDI.VEERG", 
+              ID.col = "ID.REA.NR",
+              sample.prop = 0.20)
